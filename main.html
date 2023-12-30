@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test </title>
+</head>
+<body>
+    <h1>Тест</h1>
+    
+    <form id="testForm">
+        <label for="message">Сообщение:</label>
+        <input type="text" id="message" name="message" required>
+        <button type="button" onclick="sendRequest()">Отправить запрос</button>
+    </form>
+
+    <div id="response"></div>
+
+    <script>
+        function sendRequest() {
+            var message = document.getElementById("message").value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/api/endpoint", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        document.getElementById("response").innerHTML = "Статус: " + jsonResponse.status + "<br>Сообщение: " + jsonResponse.message;
+                    } else {
+                        document.getElementById("response").innerHTML = "Ошибка: " + xhr.status + " - " + xhr.statusText;
+                    }
+                }
+            };
+
+            var data = JSON.stringify({ "message": message });
+            xhr.send(data);
+        }
+    </script>
+</body>
+</html>
